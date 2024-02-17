@@ -13,22 +13,25 @@ p {
 }
 
 .layout-header {
-  background-color: #001529; /* Example color for header background */
+  background-color: #001529;
 }
 
 .input {
-  width: 300px; /* Example width for the input field */
+  width: 100%;
 }
 
 .layout-content {
   padding: 0 50px;
-  background: "#fff";
+  background: pink;
   padding: 24;
-  min-height: 280;
+  min-height: 100vh;
 }
 
 .layout-footer {
   text-align: center;
   background-color: #001529;
   color: #fff;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
 }
