@@ -65,7 +65,7 @@ const PlaceSearch = () => {
         </div>
       </Content>
       <Footer className="layout-footer">
-        {/* Your footer content goes here */}
+        <div>React Google Map Place Finder @2024</div>
       </Footer>
     </Layout>
   );
