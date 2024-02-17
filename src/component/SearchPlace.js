@@ -40,7 +40,7 @@ const PlaceSearch = () => {
     <Layout>
       <Header>
         <Input
-          placeholder="Search for places"
+          placeholder="Search for placessss"
           value={searchTerm}
           onChange={(e) => handleSearch(e.target.value)}
         />
