@@ -62,6 +62,11 @@ const PlaceSearch = () => {
               </List.Item>
             )}
           />
+
+          <div className="card-container">
+            <div className="panel">{/* ... (paste HTML code here) */}</div>
+            <div className="map" id="gmp-map"></div>
+          </div>
         </div>
       </Content>
       <Footer className="layout-footer">

@@ -1,6 +1,7 @@
 import React from "react";
 import { Provider } from "react-redux";
-import SearchPlace from "./component/SearchPlace";
+// import SearchPlace from "./component/SearchPlace";
+import AddressSelection from "./component/AddressSelection";
 import store from "./redux/store";
 
 const App = () => {
@@ -14,7 +15,8 @@ const App = () => {
 
   return (
     <Provider store={store}>
-      <SearchPlace />
+      {/* <SearchPlace /> */}
+      <AddressSelection />
     </Provider>
   );
 };
