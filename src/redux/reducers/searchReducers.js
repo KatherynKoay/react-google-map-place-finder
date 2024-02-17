@@ -19,13 +19,17 @@ const searchReducer = (state = initialState, action) => {
       return { ...state, searchResults: action.payload };
 
     case ADD_SEARCH_HISTORY:
-      return {
-        ...state,
-        searchHistory: [
-          ...state.searchHistory,
-          { term: action.payload, timestamp: Date.now() },
-        ],
-      };
+      if (action.payload !== "") {
+        // Only add to searchHistory if the search term is not empty
+        return {
+          ...state,
+          searchHistory: [
+            ...state.searchHistory,
+            { term: action.payload, timestamp: Date.now() },
+          ],
+        };
+      }
+      return state;
 
     default:
       return state;
