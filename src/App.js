@@ -1,5 +1,4 @@
 import React from "react";
-//import { StoreContext } from "./context";
 import { Provider } from "react-redux";
 import SearchPlace from "./component/SearchPlace";
 import store from "./redux/store";
