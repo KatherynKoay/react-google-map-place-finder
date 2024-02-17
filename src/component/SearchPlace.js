@@ -24,7 +24,7 @@ const PlaceSearch = () => {
     try {
       // Replace API_KEY with your Google Maps API key
       const response = await axios.get(
-        `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${value}&key=API_KEY`
+        `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${value}&key=AIzaSyDN-vFIAUvZhPqjjy30oqc7l3ecFAvUdnU`
       );
 
       dispatch(setSearchResults(response.data.predictions));
