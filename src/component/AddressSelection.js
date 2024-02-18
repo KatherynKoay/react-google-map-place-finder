@@ -1,23 +1,17 @@
-// AddressSelection.js
-import React, { useEffect, useState } from "react";
-import { Input, List, Layout, Image } from "antd";
+import React, { useEffect } from "react";
+import { Input, Layout, Image } from "antd";
 import "../style/styles.css";
-import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
-import {
-  setSearchTerm,
-  setSearchResults,
-  addSearchHistory,
-} from "../redux/actions/searchActions";
 
 const { Header, Content, Footer } = Layout;
 
 const AddressSelection = () => {
   useEffect(() => {
     const script = document.createElement("script");
-    script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDN-vFIAUvZhPqjjy30oqc7l3ecFAvUdnU&libraries=places,marker&callback=initMap&solution_channel=GMP_QB_addressselection_v2_cAB`;
+    script.src =
+      "https://maps.googleapis.com/maps/api/js?key=AIzaSyDN-vFIAUvZhPqjjy30oqc7l3ecFAvUdnU&libraries=places,marker&callback=Function.prototype&solution_channel=GMP_QB_addressselection_v2_cAB";
     script.async = true;
     script.defer = true;
+    document.head.appendChild(script);
 
     const google = window.google;
 
@@ -92,17 +86,15 @@ const AddressSelection = () => {
       }
     }
 
-    async function initMap() {
+    // Async function to initialize the map
+    const initializeMapAsync = async () => {
       const { Map } = google.maps;
       const { AdvancedMarkerElement } = google.maps.marker;
       const { Autocomplete } = google.maps.places;
 
       const mapOptions = CONFIGURATION.mapOptions;
       mapOptions.mapId = mapOptions.mapId || "DEMO_MAP_ID";
-      mapOptions.center = mapOptions.center || {
-        lat: 37.4221,
-        lng: -122.0841,
-      };
+      mapOptions.center = mapOptions.center || { lat: 37.4221, lng: -122.0841 };
 
       const map = new Map(document.getElementById("gmp-map"), mapOptions);
       const marker = new AdvancedMarkerElement({ map });
@@ -122,96 +114,52 @@ const AddressSelection = () => {
         renderAddress(place, map, marker);
         fillInAddress(place);
       });
-    }
+    };
 
-    initMap(); // Call initMap to initialize the map when the component mounts
+    // Define initMap as an async function that immediately calls initializeMapAsync
+    window.initMap = async () => {
+      await initializeMapAsync();
+    };
+
+    return () => {
+      document.head.removeChild(script);
+    };
   }, []);
-
-  const [searchTerm, setSearchTermLocal] = useState("");
-  const dispatch = useDispatch();
-  const searchResults = useSelector((state) => state.searchResults);
-  const searchHistory = useSelector((state) => state.searchHistory);
-
-  const handleSearch = async (value) => {
-    setSearchTermLocal(value);
-
-    try {
-      // Replace API_KEY with your Google Maps API key
-      const response = await axios.get(
-        `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${value}&key=AIzaSyDN-vFIAUvZhPqjjy30oqc7l3ecFAvUdnU`
-      );
-
-      dispatch(setSearchResults(response.data.predictions));
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  const handleSearchSelect = (value) => {
-    dispatch(setSearchTerm(value));
-    dispatch(searchResults(value));
-    dispatch(addSearchHistory(value));
-    setSearchTermLocal(""); // Clear the local search term after selection
-  };
 
   return (
     <Layout>
-      <Header>
-        <Input
-          placeholder="Search for places"
-          value={searchTerm}
-          onChange={(e) => handleSearch(e.target.value)}
-        />
+      {/* <script
+        type="text/javascript"
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDN-vFIAUvZhPqjjy30oqc7l3ecFAvUdnU&libraries=places,marker&callback=Function.prototype&solution_channel=GMP_QB_addressselection_v2_cAB"
+      ></script> */}
+      <Header className="layout-header">
+        <h2>Google Maps Autocomplete Place Finder</h2>
       </Header>
       <Content>
-        <div class="card-container">
-          <div class="panel">
-            <div>
-              <Image
-                class="sb-title-icon"
-                src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg"
-                alt=""
-              />
-              <span class="sb-title">Address Selection</span>
-            </div>
-            <Input
-              placeholder="Search for places"
-              value={searchTerm}
-              onChange={(e) => handleSearch(e.target.value)}
-            />
-            <Input type="text" placeholder="Address" id="location-input" />
-            <Input type="text" placeholder="Apt, Suite, etc (optional)" />
-            <Input type="text" placeholder="City" id="locality-input" />
-            <div class="half-input-container">
+        <div className="layout-content">
+          <div className="card-container">
+            <div className="panel">
+              <span className="sb-title">
+                <Image
+                  className="sb-title-icon"
+                  src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg"
+                  alt=""
+                />
+                Address Selection
+              </span>
+              <Input placeholder="Address" id="location-input" />
+              <Input placeholder="Apt, Suite, etc (optional)" />
+              <Input placeholder="City" id="locality-input" />
               <Input
-                type="text"
-                class="half-input"
                 placeholder="State/Province"
                 id="administrative_area_level_1-input"
               />
-              <Input
-                type="text"
-                class="half-input"
-                placeholder="Zip/Postal code"
-                id="postal_code-input"
-              />
+              <Input placeholder="Zip/Postal code" id="postal_code-input" />
+              <Input placeholder="Country" id="country-input" />
             </div>
-            <Input type="text" placeholder="Country" id="country-input" />
+            <div className="map" id="gmp-map"></div>
           </div>
-          <div class="map" id="gmp-map"></div>
         </div>
-
-        <List
-          dataSource={searchHistory}
-          renderItem={(item) => (
-            <List.Item onClick={() => handleSearchSelect(item.term)}>
-              <List.Item.Meta
-                title={item.term}
-                description={new Date(item.timestamp).toLocaleString()}
-              />
-            </List.Item>
-          )}
-        />
       </Content>
       <Footer className="layout-footer">
         <div>React Google Map Place Finder @2024</div>
