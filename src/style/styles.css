@@ -24,9 +24,12 @@ body {
 
 .sb-title {
   position: relative;
-  top: -12px;
   font-family: Roboto, sans-serif;
   font-weight: 500;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  display: block;
+  text-align: left;
 }
 
 .sb-title-icon {
@@ -43,9 +46,11 @@ body {
   background: rgb(255, 255, 255);
   width: 300px;
   padding: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
+  display: block; /* Setting display to block */
+}
+
+.panel-left input {
+  margin-bottom: 50px; /* Adjustable spacing between input elements */
 }
 
 .panel-right {

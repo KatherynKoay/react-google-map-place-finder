@@ -22,16 +22,69 @@ const AddressSelection = () => {
   const address = useSelector((state) => state.address.address);
   const searchHistory = useSelector((state) => state.address.searchHistory);
 
+  // const handleAddressChange = useCallback(
+  //   async (selectedPlaceOrTerm) => {
+  //     if (typeof selectedPlaceOrTerm === "string") {
+  //       // Handle case when user types in the input
+  //       const term = selectedPlaceOrTerm;
+  //       // Perform a search based on the term (you might want to use an API for this)
+  //       const searchResult = await performSearch(term);
+
+  //       // Assuming the searchResult has a formatted_address property
+  //       if (searchResult && searchResult.formatted_address) {
+  //         const selectedAddress = searchResult.formatted_address;
+  //         dispatch(setAddress(selectedAddress));
+  //         dispatch(addToSearchHistory(selectedAddress));
+  //       } else {
+  //         console.error("Invalid search result");
+  //       }
+  //     } else if (selectedPlaceOrTerm && selectedPlaceOrTerm.formatted_address) {
+  //       // Handle case when a place is selected
+  //       const selectedAddress = selectedPlaceOrTerm.formatted_address;
+  //       dispatch(setAddress(selectedAddress));
+  //       dispatch(addToSearchHistory(selectedAddress));
+  //     }
+  //   },
+  //   [dispatch]
+  // );
+
+  // // Placeholder for the search function (replace it with your actual search logic)
+  // const performSearch = async (term) => {
+  //   return { formatted_address: `${term}` };
+  // };
+
   const handleAddressChange = useCallback(
-    (selectedPlace) => {
-      if (selectedPlace && selectedPlace.formatted_address) {
-        const selectedAddress = selectedPlace.formatted_address;
+    async (selectedPlaceOrTerm) => {
+      if (!selectedPlaceOrTerm) {
+        // Handle case when the input is empty (user deleted all typed words)
+        dispatch(setAddress("")); // Assuming setAddress action sets the address to an empty string
+        return;
+      }
+
+      if (typeof selectedPlaceOrTerm === "string") {
+        const term = selectedPlaceOrTerm;
+        const searchResult = await performSearch(term);
+
+        if (searchResult && searchResult.formatted_address) {
+          const selectedAddress = searchResult.formatted_address;
+          dispatch(setAddress(selectedAddress));
+          dispatch(addToSearchHistory(selectedAddress));
+        } else {
+          console.error("Invalid search result");
+        }
+      } else if (selectedPlaceOrTerm && selectedPlaceOrTerm.formatted_address) {
+        const selectedAddress = selectedPlaceOrTerm.formatted_address;
         dispatch(setAddress(selectedAddress));
         dispatch(addToSearchHistory(selectedAddress));
       }
     },
     [dispatch]
   );
+
+  // Placeholder for the search function (replace it with your actual search logic)
+  const performSearch = async (term) => {
+    return { formatted_address: `${term}` };
+  };
 
   useEffect(() => {
     const CONFIGURATION = {
@@ -163,7 +216,7 @@ const AddressSelection = () => {
                   className="sb-title-icon"
                   src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg"
                   alt=""
-                />
+                />{" "}
                 Address Selection
               </span>
               <Input
@@ -186,9 +239,9 @@ const AddressSelection = () => {
               <span className="sb-title">
                 <Image
                   className="sb-title-icon"
-                  src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg"
+                  src="https://fonts.gstatic.com/s/i/googlematerialicons/history/v5/24px.svg"
                   alt=""
-                />
+                />{" "}
                 Search History
               </span>
               <List
