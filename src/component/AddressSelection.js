@@ -6,15 +6,14 @@ const { Header, Content, Footer } = Layout;
 
 const script = document.createElement("script");
 script.src =
-  "https://maps.googleapis.com/maps/api/js?key=AIzaSyDN-vFIAUvZhPqjjy30oqc7l3ecFAvUdnU&libraries=places,marker&callback=Function.prototype&solution_channel=GMP_QB_addressselection_v2_cAB";
+  "https://maps.googleapis.com/maps/api/js?key=AIzaSyDN-vFIAUvZhPqjjy30oqc7l3ecFAvUdnU&libraries=places,marker&callback=initMap&solution_channel=GMP_QB_addressselection_v2_cAB";
+script.type = "text/javascript";
 script.async = true;
 script.defer = true;
 document.head.appendChild(script);
 
 const AddressSelection = () => {
   useEffect(() => {
-    const google = window.google;
-
     const CONFIGURATION = {
       ctaTitle: "Checkout",
       mapOptions: {
@@ -87,30 +86,38 @@ const AddressSelection = () => {
     }
 
     const initializeMapAsync = async () => {
-      const { Map } = google.maps;
-      const { AdvancedMarkerElement } = google.maps.marker;
-      const { Autocomplete } = google.maps.places;
+      const { google } = window; // Destructure 'google' from 'window'
+      if (google) {
+        const { Map } = google.maps;
+        const { AdvancedMarkerElement } = google.maps.marker;
+        const { Autocomplete } = google.maps.places;
+        const mapOptions = CONFIGURATION.mapOptions;
+        mapOptions.mapId = mapOptions.mapId || "DEMO_MAP_ID";
+        mapOptions.center = mapOptions.center || {
+          lat: 37.4221,
+          lng: -122.0841,
+        };
 
-      const mapOptions = CONFIGURATION.mapOptions;
-      mapOptions.mapId = mapOptions.mapId || "DEMO_MAP_ID";
-      mapOptions.center = mapOptions.center || { lat: 37.4221, lng: -122.0841 };
+        const map = new Map(document.getElementById("gmp-map"), mapOptions);
+        const marker = new AdvancedMarkerElement({ map });
+        const autocomplete = new Autocomplete(getFormInputElement("location"), {
+          fields: ["address_components", "geometry", "name"],
+          types: ["address"],
+        });
 
-      const map = new Map(document.getElementById("gmp-map"), mapOptions);
-      const marker = new AdvancedMarkerElement({ map });
-      const autocomplete = new Autocomplete(getFormInputElement("location"), {
-        fields: ["address_components", "geometry", "name"],
-        types: ["address"],
-      });
-
-      autocomplete.addListener("place_changed", () => {
-        const place = autocomplete.getPlace();
-        if (!place.geometry) {
-          window.alert(`No details available for input: '${place.name}'`);
-          return;
-        }
-        renderAddress(place, map, marker);
-        fillInAddress(place);
-      });
+        autocomplete.addListener("place_changed", () => {
+          const place = autocomplete.getPlace();
+          if (!place.geometry) {
+            window.alert(`No details available for input: '${place.name}'`);
+            return;
+          }
+          renderAddress(place, map, marker);
+          fillInAddress(place);
+        });
+      } else {
+        // Handle the case when 'google' is not defined
+        console.error("Google Maps API not loaded.");
+      }
     };
 
     window.initMap = async () => {
