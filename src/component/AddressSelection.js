@@ -4,15 +4,15 @@ import "../style/styles.css";
 
 const { Header, Content, Footer } = Layout;
 
+const script = document.createElement("script");
+script.src =
+  "https://maps.googleapis.com/maps/api/js?key=AIzaSyDN-vFIAUvZhPqjjy30oqc7l3ecFAvUdnU&libraries=places,marker&callback=Function.prototype&solution_channel=GMP_QB_addressselection_v2_cAB";
+script.async = true;
+script.defer = true;
+document.head.appendChild(script);
+
 const AddressSelection = () => {
   useEffect(() => {
-    const script = document.createElement("script");
-    script.src =
-      "https://maps.googleapis.com/maps/api/js?key=AIzaSyDN-vFIAUvZhPqjjy30oqc7l3ecFAvUdnU&libraries=places,marker&callback=Function.prototype&solution_channel=GMP_QB_addressselection_v2_cAB";
-    script.async = true;
-    script.defer = true;
-    document.head.appendChild(script);
-
     const google = window.google;
 
     const CONFIGURATION = {
@@ -86,7 +86,6 @@ const AddressSelection = () => {
       }
     }
 
-    // Async function to initialize the map
     const initializeMapAsync = async () => {
       const { Map } = google.maps;
       const { AdvancedMarkerElement } = google.maps.marker;
@@ -106,8 +105,6 @@ const AddressSelection = () => {
       autocomplete.addListener("place_changed", () => {
         const place = autocomplete.getPlace();
         if (!place.geometry) {
-          // User entered the name of a Place that was not suggested and
-          // pressed the Enter key, or the Place Details request failed.
           window.alert(`No details available for input: '${place.name}'`);
           return;
         }
@@ -116,7 +113,6 @@ const AddressSelection = () => {
       });
     };
 
-    // Define initMap as an async function that immediately calls initializeMapAsync
     window.initMap = async () => {
       await initializeMapAsync();
     };
@@ -128,10 +124,6 @@ const AddressSelection = () => {
 
   return (
     <Layout>
-      {/* <script
-        type="text/javascript"
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDN-vFIAUvZhPqjjy30oqc7l3ecFAvUdnU&libraries=places,marker&callback=Function.prototype&solution_channel=GMP_QB_addressselection_v2_cAB"
-      ></script> */}
       <Header className="layout-header">
         <h2>Google Maps Autocomplete Place Finder</h2>
       </Header>
