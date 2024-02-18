@@ -9,49 +9,10 @@ import {
 
 const { Header, Content, Footer } = Layout;
 
-const script = document.createElement("script");
-script.src =
-  "https://maps.googleapis.com/maps/api/js?key=AIzaSyDN-vFIAUvZhPqjjy30oqc7l3ecFAvUdnU&libraries=places,marker&callback=initMap&solution_channel=GMP_QB_addressselection_v2_cAB";
-script.type = "text/javascript";
-script.async = true;
-script.defer = true;
-document.head.appendChild(script);
-
 const AddressSelection = () => {
   const dispatch = useDispatch();
   const address = useSelector((state) => state.address.address);
   const searchHistory = useSelector((state) => state.address.searchHistory);
-
-  // const handleAddressChange = useCallback(
-  //   async (selectedPlaceOrTerm) => {
-  //     if (typeof selectedPlaceOrTerm === "string") {
-  //       // Handle case when user types in the input
-  //       const term = selectedPlaceOrTerm;
-  //       // Perform a search based on the term (you might want to use an API for this)
-  //       const searchResult = await performSearch(term);
-
-  //       // Assuming the searchResult has a formatted_address property
-  //       if (searchResult && searchResult.formatted_address) {
-  //         const selectedAddress = searchResult.formatted_address;
-  //         dispatch(setAddress(selectedAddress));
-  //         dispatch(addToSearchHistory(selectedAddress));
-  //       } else {
-  //         console.error("Invalid search result");
-  //       }
-  //     } else if (selectedPlaceOrTerm && selectedPlaceOrTerm.formatted_address) {
-  //       // Handle case when a place is selected
-  //       const selectedAddress = selectedPlaceOrTerm.formatted_address;
-  //       dispatch(setAddress(selectedAddress));
-  //       dispatch(addToSearchHistory(selectedAddress));
-  //     }
-  //   },
-  //   [dispatch]
-  // );
-
-  // // Placeholder for the search function (replace it with your actual search logic)
-  // const performSearch = async (term) => {
-  //   return { formatted_address: `${term}` };
-  // };
 
   const handleAddressChange = useCallback(
     async (selectedPlaceOrTerm) => {
@@ -87,6 +48,14 @@ const AddressSelection = () => {
   };
 
   useEffect(() => {
+    const script = document.createElement("script");
+    script.src =
+      "https://maps.googleapis.com/maps/api/js?key=AIzaSyDN-vFIAUvZhPqjjy30oqc7l3ecFAvUdnU&libraries=places,marker&callback=initMap&solution_channel=GMP_QB_addressselection_v2_cAB";
+    script.type = "text/javascript";
+    script.async = true;
+    script.defer = true;
+    document.head.appendChild(script);
+
     const CONFIGURATION = {
       ctaTitle: "Checkout",
       mapOptions: {
@@ -193,8 +162,10 @@ const AddressSelection = () => {
       }
     };
 
-    window.initMap = async () => {
-      await initializeMapAsync();
+    script.onload = () => {
+      window.initMap = async () => {
+        await initializeMapAsync();
+      };
     };
 
     return () => {

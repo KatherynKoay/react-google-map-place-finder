@@ -5,7 +5,7 @@ export const setAddress = (address) => ({
   payload: address,
 });
 
-export const addToSearchHistory = (searchTerm) => ({
+export const addToSearchHistory = (term) => ({
   type: ADD_TO_SEARCH_HISTORY,
-  payload: searchTerm,
+  payload: term,
 });
