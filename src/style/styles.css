@@ -4,9 +4,8 @@
 }
 
 .layout-content {
-  padding: 0 50px;
+  padding: 0;
   background: rgb(255, 255, 255);
-  padding: 24;
   min-height: 100vh;
 }
 
@@ -40,13 +39,20 @@ body {
   height: 100vh;
 }
 
-.panel {
+.panel-left {
   background: rgb(255, 255, 255);
   width: 300px;
   padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+}
+
+.panel-right {
+  background: rgb(255, 255, 255);
+  width: 300px;
+  padding: 20px;
+  display: block;
 }
 
 .map {

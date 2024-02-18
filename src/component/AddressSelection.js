@@ -1,6 +1,11 @@
-import React, { useEffect } from "react";
-import { Input, Layout, Image } from "antd";
+import React, { useEffect, useCallback } from "react";
+import { Input, Layout, Image, List } from "antd";
 import "../style/styles.css";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setAddress,
+  addToSearchHistory,
+} from "../redux/actions/addressActions";
 
 const { Header, Content, Footer } = Layout;
 
@@ -13,6 +18,21 @@ script.defer = true;
 document.head.appendChild(script);
 
 const AddressSelection = () => {
+  const dispatch = useDispatch();
+  const address = useSelector((state) => state.address.address);
+  const searchHistory = useSelector((state) => state.address.searchHistory);
+
+  const handleAddressChange = useCallback(
+    (selectedPlace) => {
+      if (selectedPlace && selectedPlace.formatted_address) {
+        const selectedAddress = selectedPlace.formatted_address;
+        dispatch(setAddress(selectedAddress));
+        dispatch(addToSearchHistory(selectedAddress));
+      }
+    },
+    [dispatch]
+  );
+
   useEffect(() => {
     const CONFIGURATION = {
       ctaTitle: "Checkout",
@@ -137,7 +157,7 @@ const AddressSelection = () => {
       <Content>
         <div className="layout-content">
           <div className="card-container">
-            <div className="panel">
+            <div className="panel-left">
               <span className="sb-title">
                 <Image
                   className="sb-title-icon"
@@ -146,7 +166,12 @@ const AddressSelection = () => {
                 />
                 Address Selection
               </span>
-              <Input placeholder="Address" id="location-input" />
+              <Input
+                placeholder="Address"
+                value={address}
+                onChange={(e) => handleAddressChange(e.target.value)}
+                id="location-input"
+              />
               <Input placeholder="Apt, Suite, etc (optional)" />
               <Input placeholder="City" id="locality-input" />
               <Input
@@ -157,6 +182,27 @@ const AddressSelection = () => {
               <Input placeholder="Country" id="country-input" />
             </div>
             <div className="map" id="gmp-map"></div>
+            <div className="panel-right">
+              <span className="sb-title">
+                <Image
+                  className="sb-title-icon"
+                  src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg"
+                  alt=""
+                />
+                Search History
+              </span>
+              <List
+                dataSource={searchHistory}
+                renderItem={(item) => (
+                  <List.Item onClick={() => handleAddressChange(item.term)}>
+                    <List.Item.Meta
+                      title={item.term}
+                      description={new Date(item.timestamp).toLocaleString()}
+                    />
+                  </List.Item>
+                )}
+              />
+            </div>
           </div>
         </div>
       </Content>
